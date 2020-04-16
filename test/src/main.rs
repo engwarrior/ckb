@@ -390,6 +390,8 @@ fn all_specs() -> SpecMap {
         Box::new(DAOVerify),
         Box::new(AvoidDuplicatedProposalsWithUncles),
         Box::new(TemplateTxSelect),
+        Box::new(SetFilter),
+        Box::new(GetFilteredBlocks),
     ];
     specs.into_iter().map(|spec| (spec.name(), spec)).collect()
 }

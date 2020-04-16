@@ -6,14 +6,16 @@ use ckb_jsonrpc_types::ScriptHashType;
 use ckb_logger::info_target;
 use ckb_network::{
     BlockingFlag, CKBProtocol, NetworkService, NetworkState, MAX_FRAME_LENGTH_ALERT,
-    MAX_FRAME_LENGTH_RELAY, MAX_FRAME_LENGTH_SYNC, MAX_FRAME_LENGTH_TIME,
+    MAX_FRAME_LENGTH_FILTER, MAX_FRAME_LENGTH_RELAY, MAX_FRAME_LENGTH_SYNC, MAX_FRAME_LENGTH_TIME,
 };
 use ckb_network_alert::alert_relayer::AlertRelayer;
 use ckb_resource::Resource;
 use ckb_rpc::{RpcServer, ServiceBuilder};
 use ckb_shared::shared::{Shared, SharedBuilder};
 use ckb_store::ChainStore;
-use ckb_sync::{NetTimeProtocol, NetworkProtocol, Relayer, SyncShared, Synchronizer};
+use ckb_sync::{
+    FilterProtocol, NetTimeProtocol, NetworkProtocol, Relayer, SyncShared, Synchronizer,
+};
 use ckb_types::{core::cell::setup_system_cell_cache, prelude::*};
 use ckb_util::{Condvar, Mutex};
 use ckb_verification::{GenesisVerifier, Verifier};
@@ -71,6 +73,7 @@ pub fn run(args: RunArgs, version: Version) -> Result<(), ExitCode> {
         args.config.tx_pool.min_fee_rate,
         args.config.tx_pool.max_tx_verify_cycles,
     );
+    let filter = FilterProtocol::new(shared.notify_controller(), Arc::clone(&sync_shared));
     let net_timer = NetTimeProtocol::default();
     let alert_signature_config = args.config.alert_signature.unwrap_or_default();
     let alert_relayer = AlertRelayer::new(
@@ -106,6 +109,15 @@ pub fn run(args: RunArgs, version: Version) -> Result<(), ExitCode> {
             &["1".to_string()][..],
             MAX_FRAME_LENGTH_RELAY,
             Box::new(relayer),
+            Arc::clone(&network_state),
+            blocking_recv_flag,
+        ),
+        CKBProtocol::new(
+            "fil".to_string(),
+            NetworkProtocol::FILTER.into(),
+            &["1".to_string()][..],
+            MAX_FRAME_LENGTH_FILTER,
+            Box::new(filter),
             Arc::clone(&network_state),
             blocking_recv_flag,
         ),

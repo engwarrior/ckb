@@ -183,6 +183,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "bloom-filters"
+version = "0.1.0"
+source = "git+https://github.com/nervosnetwork/bloom-filters#50c1b685b2d78cf3625ca016313d3d8fb36e18a3"
+dependencies = [
+ "rand 0.6.5",
+]
+
+[[package]]
 name = "bs58"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -960,6 +968,7 @@ name = "ckb-sync"
 version = "0.32.0-pre"
 dependencies = [
  "bitflags",
+ "bloom-filters",
  "ckb-chain",
  "ckb-chain-spec",
  "ckb-dao",
@@ -967,6 +976,7 @@ dependencies = [
  "ckb-error",
  "ckb-logger",
  "ckb-network",
+ "ckb-notify",
  "ckb-shared",
  "ckb-store",
  "ckb-test-chain-utils",
@@ -2522,8 +2532,10 @@ dependencies = [
 [[package]]
 name = "merkle-cbt"
 version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d589b5a7ca642540e7ccfbca3bcd0aa18693eb9287e2a6b17c79b1d062d52863"
+source = "git+https://github.com/nervosnetwork/merkle-tree#e64ca867ab902472ccac9380a9bc9aa853c27133"
+dependencies = [
+ "cfg-if",
+]
 
 [[package]]
 name = "mime"

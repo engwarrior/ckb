@@ -1,6 +1,7 @@
 mod alert;
 mod consensus;
 mod dao;
+mod filter;
 mod indexer;
 mod mining;
 mod p2p;
@@ -11,6 +12,7 @@ mod tx_pool;
 pub use alert::*;
 pub use consensus::*;
 pub use dao::*;
+pub use filter::*;
 pub use indexer::*;
 pub use mining::*;
 pub use p2p::*;
@@ -133,6 +135,14 @@ impl TestProtocol {
         Self {
             id: NetworkProtocol::RELAY.into(),
             protocol_name: "rel".to_string(),
+            supported_versions: vec!["1".to_string()],
+        }
+    }
+
+    pub fn filter() -> Self {
+        Self {
+            id: NetworkProtocol::FILTER.into(),
+            protocol_name: "fil".to_string(),
             supported_versions: vec!["1".to_string()],
         }
     }
